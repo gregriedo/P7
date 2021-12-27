@@ -1,5 +1,6 @@
 const sql = require('../connexion.js');
 
+
 const User = function(user) {
   this.id = user.id,
   this.mail = user.mail,
