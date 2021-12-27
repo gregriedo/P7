@@ -67,12 +67,14 @@ Article.getOneArticle = (articleId, result) => {
 
 //Modification d'un article
 
-Article.updateArticle= (Article, result) => {
-    sql.query(`UPDATE Article SET title= ?, message= ?, imageArticle= ?, date_creation= ? WHERE id = ?`, 
-    [Article.title, Article.message, Article.imageArticle, Article.date_creation, Article.id]
+Article.updateArticle= (id, Article, result) => {
+    
+    sql.query(`UPDATE Article SET title= ?, message= ?, imageArticle= ?, date_creation= ? WHERE id = ? INNER JOIN user ON  user.id = article.user_id`, 
+    [Article.title, Article.message, Article.imageArticle, Article.date_creation, Article.id, Article.user_id]
     ,(err, res)=>{
         if (err) throw err;
-        result(null, res);
+
+        result(null, res); 
 })
 };
 
@@ -80,18 +82,17 @@ Article.updateArticle= (Article, result) => {
 // Supression d'un article
 
 Article.removeArticle = (id, result) => {
-    sql.query("DELETE FROM Article WHERE id = ?", id, (err, res) => {
+    sql.query("DELETE FROM Article WHERE id = ? INNER JOIN user ON article.user_id = user.id", id, (err, res) => {
         if (err) {
             console.log("erreur: ", err);
             result(null, err);
             return;
         }
-        if (res.affectedRows == 0) {
-            result({ kind: "Non trouvé !" }, null);
-            return;
-        }
-        console.log("Suppression de l'Article avec l'id : ", id);
+        if (id === user.id) {
+            console.log("Suppression de l'Article avec l'id : ", id);
         result(null, res);
+        }
+        
     });
 };
 
