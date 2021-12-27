@@ -66,8 +66,8 @@ Comment.getOneComment = (commentId, result) => {
 //Modification du commentaire
 
 Comment.updateComment = (id, Comment, result) => {
-    sql.query(`UPDATE Comment SET comment= ?, imageComment= ?, article_id = ? WHERE id= ?`,
-    [Comment.comment, Comment.imageComment, Comment.article_id, Comment.id]
+    sql.query(`UPDATE Comment SET comment= ?, imageComment= ?, article_id = ? WHERE id= ? INNER JOIN User ON comment.user_id = user.id`,
+    [Comment.comment, Comment.imageComment, Comment.article_id, Comment.id, Comment.user_id]
     , (err, res) => {
         if (err) throw err;
 
@@ -80,7 +80,7 @@ Comment.updateComment = (id, Comment, result) => {
 // Suppression d'un commentaire en fonction de son ID
 
 Comment.deleteComment = (id, result) => {
-    sql.query("DELETE FROM Comment WHERE id = ?", id, (err, res) => {
+    sql.query("DELETE FROM Comment WHERE id = ? INNER JOIN User ON comment.user_id = user.id", id, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(null, err);
