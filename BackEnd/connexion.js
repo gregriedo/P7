@@ -7,7 +7,7 @@ let con = mysql.createConnection({
   user: config.USER,
   password: config.PASSWORD,
   database: config.DATABASE,
-  port: config.PORT
+  port: config.PORT 
 
 });
 
@@ -19,3 +19,4 @@ con.connect(error => {
 });
  
 module.exports = con;
+ 
