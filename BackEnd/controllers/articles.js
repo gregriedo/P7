@@ -36,7 +36,7 @@ exports.getOneArticle = (req, res, next) => {
 exports.modifyArticle = (req, res, next) => {
     const articleObject = {...req.body};
  
-   Comment.updateComment(req.params.id, articleObject, (err,data)=>{
+   Article.updateArticle(req.params.id, articleObject, (err,data)=>{
      if(err){
       res.status(500).json({ error });
     }
@@ -77,7 +77,7 @@ exports.getAllArticle = (req, res) => {
                     comments.forEach(comment => {
                       console.log(articles);
 
-                      /*  let article = articles.find(elt => elt.article_id === comment.article_id)
+                       /*let article = articles.find(elt => elt.article_id === comment.article_id)
                         article.comments.push(comment)*/
                     })
                     res.send(articles)
