@@ -1,8 +1,35 @@
 const User = require('../models/users');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');;
+const MaskData = require('maskdata');
+const Joi = require('joi');
+
+
 
 exports.signup = (req, res) => {
+
+    const schema = Joi.object({
+        username: Joi.string()
+            .alphanum()
+            .min(3)
+            .max(30)
+            .required(),
+    
+        password: Joi.string()
+            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+    
+        repeat_password: Joi.ref('password'),
+    
+    
+        mail: Joi.string()
+            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'fr'] } })
+    })
+        .with('username', 'mail')
+        .xor('password', 'mail')
+        .with('password', 'repeat_password');
+    
+    
+    schema.validate({});
 
     if (!req.body) {
         res.status(400).json({ message: "Erreur !" })
@@ -10,12 +37,20 @@ exports.signup = (req, res) => {
     //Hashage du MDP
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
-            let admin = "USER";
-            if (req.body.isAdmin) {
-                admin = req.body.isAdmin;
-            }
+        
+            const emailMask2Options = {
+                maskWith: "*", 
+                unmaskedStartCharactersBeforeAt: 3,
+                unmaskedEndCharactersAfterAt: 1,
+                maskAtTheRate: false
+            };
+            
+            const mail = req.body.mail;
+            
+            const maskedEmail = MaskData.maskEmail2(mail, emailMask2Options);
+
             const userObject = new User({
-                mail: req.body.mail,
+                mail: maskedEmail,
                 password: hash,
                 username: req.body.username,
                 imageProfil : req.body.imageProfil,
@@ -26,6 +61,7 @@ exports.signup = (req, res) => {
                 ...userObject,
                 imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
              });
+             
              
             User.create(user, (err, data) => {
                 if (err)
