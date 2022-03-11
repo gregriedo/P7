@@ -69,11 +69,11 @@ Article.getOneArticle = (articleId, result) => {
 
 Article.updateArticle= (id, Article, result) => {
     
-    sql.query(`UPDATE Article SET title= ?, message= ?, imageArticle= ?, date_creation= ? WHERE id = ? INNER JOIN user ON  user.id = article.user_id`, 
+    sql.query(`UPDATE Article SET title= ?, message= ?, imageArticle= ?, date_creation= NOW() WHERE id = ${id} `, 
     [Article.title, Article.message, Article.imageArticle, Article.date_creation, Article.id, Article.user_id]
     ,(err, res)=>{
         if (err) throw err;
-
+ 
         result(null, res); 
 })
 };
@@ -82,7 +82,7 @@ Article.updateArticle= (id, Article, result) => {
 // Supression d'un article
 
 Article.removeArticle = (id, result) => {
-    sql.query("DELETE FROM Article WHERE id = ? INNER JOIN user ON article.user_id = user.id", id, (err, res) => {
+    sql.query("DELETE FROM Article WHERE id = ? INNER JOIN user ON user.id = article.user_id ", id, (err, res) => {
         if (err) {
             console.log("erreur: ", err);
             result(null, err);
