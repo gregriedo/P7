@@ -1,0 +1,56 @@
+.container{
+    margin-top: 1%;
+    height:680px;
+    background-image: url("../assets/icon.svg");
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: center;
+    text-align: center;
+}
+
+.text{
+    padding-top: 15%;
+    text-align: center;
+}
+
+
+@media all and (min-width: 300px) and (max-width: 700px){
+    .container{
+        height: 100%;
+        margin-top: 1%;
+        background-image: url("../assets/icon.svg");
+        -webkit-background-size: cover; /* pour anciens Chrome et Safari */
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: scroll;
+        background-position: center;
+        text-align: center;
+    }
+    
+    .text{
+        padding-top: 16%;
+        text-align: center;
+    }
+}
+
+/* Responsive Pour Tablette */
+@media all and (min-width: 701px) and (max-width: 1024px){
+    .container{
+        height: 100%;
+      
+        background-image: url("../assets/icon.svg");
+        -webkit-background-size: cover; /* pour anciens Chrome et Safari */
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: scroll;
+        background-position: center;
+        text-align: center;
+    }
+    
+    .text{
+        margin-top: 5%;
+        padding: 40% 0 30% 0;
+        text-align: center;
+    }
+    
+}
