@@ -1,6 +1,7 @@
 const Article = require('../models/articles');
 const Comment = require('../models/comments');
 const fs = require('fs');
+const jwtUtils = require('../utils/jwt.utils');
 
 exports.createArticle = (req, res, next) => {
   const articleObject = new Article({
@@ -20,7 +21,7 @@ exports.createArticle = (req, res, next) => {
         else res.send(data)
     })
 
-};
+}; 
 
 exports.getOneArticle = (req, res, next) => {
   Article.getOneArticle(req.params.id, (err, article) => {
@@ -35,7 +36,8 @@ exports.getOneArticle = (req, res, next) => {
 
 exports.modifyArticle = (req, res, next) => {
     const articleObject = {...req.body};
- 
+    const userId = jwtUtils.getUserId(req.headers["authorization"]);
+    console.log(userId + "bonjour");
    Article.updateArticle(req.params.id, articleObject, (err,data)=>{
      if(err){
       res.status(500).json({ error });
