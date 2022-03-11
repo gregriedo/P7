@@ -1,6 +1,6 @@
 const User = require('../models/users');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');;
+const jwtUtils = require('jsonwebtoken');;
 const MaskData = require('maskdata');
 const Joi = require('joi');
 
@@ -8,29 +8,7 @@ const Joi = require('joi');
 
 exports.signup = (req, res) => {
 
-    const schema = Joi.object({
-        username: Joi.string()
-            .alphanum()
-            .min(3)
-            .max(30)
-            .required(),
     
-        password: Joi.string()
-            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
-    
-        repeat_password: Joi.ref('password'),
-    
-    
-        mail: Joi.string()
-            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'fr'] } })
-    })
-        .with('username', 'mail')
-        .xor('password', 'mail')
-        .with('password', 'repeat_password');
-    
-    
-    schema.validate({});
-
     if (!req.body) {
         res.status(400).json({ message: "Erreur !" })
     }
@@ -38,7 +16,7 @@ exports.signup = (req, res) => {
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
         
-            const emailMask2Options = {
+            /*const emailMask2Options = {
                 maskWith: "*", 
                 unmaskedStartCharactersBeforeAt: 3,
                 unmaskedEndCharactersAfterAt: 1,
@@ -49,21 +27,45 @@ exports.signup = (req, res) => {
             
             const maskedEmail = MaskData.maskEmail2(mail, emailMask2Options);
 
+            const schema = Joi.object({
+                username: Joi.string()
+                    .alphanum()
+                    .min(3)
+                    .max(30)
+                    .required(),
+            
+                password: Joi.string()
+                    .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+            
+                repeat_password: Joi.ref('password'),
+            
+            
+                mail: Joi.string()
+                    .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'fr'] } })
+            })
+                .with('username', 'mail')
+                .xor('password', 'mail')
+                .with('password', 'repeat_password');
+            
+            
+            schema.validate({});*/
+        
+
             const userObject = new User({
-                mail: maskedEmail,
+                mail: req.body.mail,
                 password: hash,
                 username: req.body.username,
                 imageProfil : req.body.imageProfil,
                 isAdmin : req.body.isAdmin
             })
             
-            const user = new User({
+            /*const user = new User({
                 ...userObject,
                 imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-             });
+             });*/
              
              
-            User.create(user, (err, data) => {
+            User.create(userObject, (err, data) => {
                 if (err)
                     res.status(500).json({ message: "Utilisateur non crée !" + err })
                 else res.send(data);
@@ -78,7 +80,7 @@ exports.login = (req, res) => {
         if (err) {
             res.status(400).json({ message: err })
         }
-        else {
+        else { 
             bcrypt.compare(req.body.password, user.password)
                 .then(valid => {
                     if (!valid) {
@@ -86,7 +88,7 @@ exports.login = (req, res) => {
                     }
                     res.status(200).json({
                         userId: user.id,
-                        token: jwt.sign({ userId: user.id }, 'RANDOM_TOKEN_SECRET', {
+                        token: jwtUtils.sign({ userId: user.id }, 'RANDOM_TOKEN_SECRET', {
                             expiresIn: '6h'
                         })
                     })
