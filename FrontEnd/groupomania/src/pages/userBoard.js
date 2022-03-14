@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
 import '../styles/userBoard.css'
+import LabelBottomNavigation from '../components/Footer'
 import Avatar from '@mui/material/Avatar';
+import Link from '@mui/material/Link';
 import axios from "axios";
 import Feed from "../pages/feed";
 
@@ -36,7 +38,7 @@ function UserBoard() {
            
            <div className="userProfil">
            <Avatar
-            alt="T"
+            alt={userR.username}
             src="{userR.imageProfil}"
             sx={{ width: 150, height: 150 }}
             />
@@ -47,19 +49,22 @@ function UserBoard() {
         
            </div>
            <div className="newPost">
-               <a href="/newArticle">Créer un Nouvel Article</a>
+           <Link href="/newArticle" color="inherit">Créer un Nouvel Article</Link>
            </div>
            <div className="modify-user">
-               <a href="/modifyProfil">Paramètres du Compte</a>
+           <Link href="/modifyProfil" color="inherit">Paramètres du Compte</Link>
            </div>
            
            
            </aside>
         
              
-           <div>
+           <div className="groupo-feed">
                <Feed />
            </div>
+           <footer>
+             <LabelBottomNavigation />
+           </footer>
         
           
            
