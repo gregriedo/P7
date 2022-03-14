@@ -56,16 +56,16 @@ exports.signup = (req, res) => {
                 password: hash,
                 username: req.body.username,
                 imageProfil : req.body.imageProfil,
-                isAdmin : req.body.isAdmin
-            })
+                isAdmin : req.body.isAdmin 
+            }) 
             
-            /*const user = new User({
+            const user = new User({
                 ...userObject,
-                imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-             });*/
+                imageProfil: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+             });
+        
              
-             
-            User.create(userObject, (err, data) => {
+            User.create(user, (err, data) => {
                 if (err)
                     res.status(500).json({ message: "Utilisateur non crée !" + err })
                 else res.send(data);
@@ -73,7 +73,7 @@ exports.signup = (req, res) => {
             
         }).catch(err => res.status(500).json({ message: "Il y a une erreur :" + err }))
 
-}
+}  
 
 exports.login = (req, res) => {
     User.findOneUser(req.body.mail, (err, user) => {
@@ -96,7 +96,7 @@ exports.login = (req, res) => {
         }
     }
     )
-}
+} 
 
 
 exports.findOneUser = (req, res, next) => {
@@ -123,7 +123,7 @@ exports.modifyUser = (req, res, next) => {
        const userObject = req.file ?
     {
       ...JSON.parse(req.body.user),
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      imageProfil: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
      res.json({message:"Utilisateur modifié avec succès !"})
    }
