@@ -8,22 +8,20 @@
 }
 
 .userProfil{
-    padding: 20%;
+    padding: 25%;
     border-bottom: solid 3px black;
     
 }
 
 .userUsername{
-    margin-top: 20%;
+    margin-top: 15%;
     padding-left: 25%;
     font-family: "Monaco", "Courier New", monospace;
     font-weight: bold;
     font-size: 25px;
 }
-a:link{
-    text-decoration: none;
+
     
-}
 .newPost, .modify-user{
     margin-top: 20%;
     padding-left: 5%;
@@ -31,3 +29,6 @@ a:link{
 }
 
 
+footer{
+    position:relative;
+}
