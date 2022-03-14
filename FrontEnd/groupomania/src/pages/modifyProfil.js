@@ -1,5 +1,6 @@
 import  React, {useState}  from 'react';
 import DeleteProfil from "./deleteProfil";
+import LabelBottomNavigation from '../components/Footer'
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
@@ -156,7 +157,9 @@ export default function ModifyProfil() {
             <div>
                <DeleteProfil />
             </div>
-       
+            <footer>
+              <LabelBottomNavigation />
+            </footer>
         
       </Box>
           
