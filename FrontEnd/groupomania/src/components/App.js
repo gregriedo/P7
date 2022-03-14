@@ -5,6 +5,8 @@ import CreateAccount from '../pages/signup'
 import UserBoard from '../pages/userBoard'
 import NewPost from'../pages/newArticle'
 import  ModifyProfil from '../pages/modifyProfil'
+import NewComment from '../pages/newComment'
+
 
 import {
   BrowserRouter,
@@ -21,6 +23,7 @@ function App() {
       <Banner />
       <Routes>
         
+        <Route path='/newComment' element={<NewComment />} />
         <Route path="/newArticle" element={<NewPost />} /> 
         <Route path="/modifyProfil" element={<ModifyProfil />} />
         <Route path="/userBoard" element={<UserBoard />} />
@@ -29,6 +32,7 @@ function App() {
 
 
       </Routes>
+   
     </BrowserRouter>
   
 
