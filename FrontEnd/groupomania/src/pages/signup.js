@@ -1,24 +1,22 @@
 import  React, {useState}  from 'react';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
-import TextField from '@mui/material/TextField';
-import { styled } from '@mui/material/styles';
+import InputLabel from '@mui/material/InputLabel';
+import Input from '@mui/material/Input';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import PhotoCamera from '@mui/icons-material/PhotoCamera';
+
 import Stack from '@mui/material/Stack';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
-const Input = styled('input')({
-    
-  });
 
 
 
 export default function CreateAccount() {
     const navigate = useNavigate();
+    
     const [mail, setMail] = useState();
     const [password, setPassword] = useState();
     const [username, setUsername] = useState();
@@ -26,16 +24,16 @@ export default function CreateAccount() {
     const [status, setStatus] = useState('')
     const [isAdmin] = useState(false);
 
-    const handleSubmit = async (e) => {
+   /* const handleSubmit = async (e) => {
       e.preventDefault()
       let formData = new FormData()
       formData.append('file', imageProfil.data)
-      const response = await fetch('http://localhost:3000/image', {
+      const response = await fetch('http://localhost:3000/images', {
         method: 'POST',
         body: formData,
       })
       if (response) setStatus(response.statusText)
-    }
+    }*/
   
     const handleFileChange = (e) => {
       const img = {
@@ -47,18 +45,26 @@ export default function CreateAccount() {
 
     const signup = (e) =>{
       e.preventDefault();
-      axios.post("http://localhost:3000/api/auth/signup",{ headers: {"content-type" : 'multipart/form-data'},  
+      let form = document.getElementById('form');
+      let formData = new FormData(form)
       
-            
-            mail,
-            password,
-            username,
-            imageProfil,
-            isAdmin,
+      formData.append('mail', mail.data)
+      formData.append('password', password.data)
+      formData.append('username', username.data)
+      formData.append('userpic', imageProfil.data)
+      formData.append('isAdmin', isAdmin.data)
       
-            
-        })
+      console.log(formData);
+     
+    axios.post("http://localhost:3000/api/auth/signup",{
+       
+        headers: {
+          "Content-Type": "multipart/form-data",
+
+        }, formData,
+      })
         .then((response) => {
+          setStatus(response.statusText)
            console.log(response);
            navigate("../", { replace: true });
            alert("Votre Compte a bien été crée !")
@@ -72,58 +78,45 @@ export default function CreateAccount() {
           
   return (
     <Box
-      component="form"
       sx={{
-        '& .MuiTextField-root': { m: 1, width: '25ch' },
+        '& > :not(style)': { m: 1 },
       }}
       noValidate
       autoComplete="off"
+      onSubmit={signup}
+      
     >
-    <FormControl onSubmit={signup}>
-    <TextField
-          required
-            id="mail"
-            type="mail"
-            label=" Email"
-            title="Ex: groupomania@gmail.com, ..."
-            onChange={(event) => {
-              setMail(event.target.value);
-            }}
-            
-            
-        />
-       
-        <TextField
-        required
-          id="password"
-          label=" Password"
-          type="password"  
-          title='Doit contenir min 1 chiffre'
-          onChange={(event) => {
+      <form id='form'>
+      <FormControl variant="standard">
+        <InputLabel htmlFor="component-simple">Mail</InputLabel>
+        <Input  id="component-simple" onChange={(event) => {
+            setMail(event.target.value);
+          }} />
+      </FormControl>
+      <FormControl variant="standard">
+        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+        <Input  type="password" id="component-simple"  onChange={(event) => {
             setPassword(event.target.value);
-          }}
-           
-            
-        />
-          <TextField
-          required
-              id="username"
-              type="text"
-              label="Username"
-              title="Ex: SuperMario, Jo ..."
-              onChange={(event) => {
-                setUsername(event.target.value);
-               }}
-              
-              
-        />
+          }} />
+      </FormControl>
+      <FormControl variant="standard">
+        <InputLabel htmlFor="component-simple">Username</InputLabel>
+        <Input  id="component-simple"  onChange={(event) => {
+            setUsername(event.target.value);
+          }} />
+      </FormControl>
+
+
+
+    <FormControl >
+    
         
         <Stack direction="row" alignItems="center" spacing={2}>
       
              <label htmlFor="icon-button-file">
-              <Input accept="image/*" onChange={handleFileChange} id="icon-button-file" type="file" />
+              <Input  accept="image/*" onChange={handleFileChange} id="icon-button-file" type="file" />
               <IconButton color="primary" aria-label="upload picture" component="span">
-              <PhotoCamera />
+             
               {imageProfil.preview && <img src={imageProfil.preview} alt="Profil Pic" width='100' height='100' />}
               
               </IconButton>
@@ -131,13 +124,15 @@ export default function CreateAccount() {
               
               
              </label>
-          <Button  onClick={handleSubmit} type="submit" variant="contained">Créer Son Compte</Button>
+          <Button   type="submit" variant="contained">Créer Son Compte</Button>
     
          </Stack>
          {status && <h4>{status}</h4>}
          
 
     </FormControl>
+      </form>
+      
     
        
       
