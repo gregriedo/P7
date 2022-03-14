@@ -1,6 +1,8 @@
 import  React, {useState}  from 'react';
+import LabelBottomNavigation from "../components/Footer";
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
+import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -18,7 +20,7 @@ export default function NewPost() {
     const [title, setTitle] = useState();
     const [message, setMessage] = useState();
     const [imageArticle, setImageArticle] = useState({ preview: '', data: '' });
-    const [status, setStatus] = useState('')
+    const [status, setStatus] = useState();
 
 
  
@@ -69,7 +71,7 @@ export default function NewPost() {
           })
           .catch(function (error) {
             console.log(error);
-          });
+          }); 
       };
 
       
@@ -81,21 +83,23 @@ export default function NewPost() {
         '& .MuiTextField-root': { m: 1, width: '25ch' },
       }}
       noValidate
-      autoComplete="off">
+      autoComplete="off"
+      onSubmit={handleSubmit}
+      >
 
          
-      <div onSubmit={handleSubmit}>
+      <FormControl >
         <TextField
           id="standard-multiline-flexible"
           label="Titre"
           multiline
-          rowsMax={4}
+          maxRows={4}
           onChange={(event) => {
             setTitle(event.target.value);
           }}
         />
-      </div>
-      <div>
+       </FormControl> 
+       <FormControl>
         <TextField
           
           id="standard-multiline-static"
@@ -106,7 +110,9 @@ export default function NewPost() {
             setMessage(event.target.value);
           }}
         />
-      </div>
+        </FormControl>
+        <FormControl>
+
       <Stack direction="row" alignItems="center" spacing={2}>
       
       <label htmlFor="icon-button-file">
@@ -132,6 +138,10 @@ export default function NewPost() {
       </Button>
       </Stack>
          {status && <h4>{status}</h4>}
+      </FormControl>   
+      <footer>
+        <LabelBottomNavigation />
+      </footer>
     
         
     
