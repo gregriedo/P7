@@ -13,21 +13,21 @@ const hpp = require('hpp');
 
 const app = express();
 
-
+  
   
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  next();
+  next(); 
 });
-
+   
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100 // Chaque IP est limité à 100 requêtes par windowMs
 });
 
-app.use(limiter);
+app.use(limiter);  
 app.use(helmet()); // Sécurisation des en-têtes HTTP
 app.use(hpp()); 
 
@@ -37,6 +37,6 @@ app.use('/api/articles', articlesRoutes);
 app.use('/api/comments', commentsRoutes);
 app.use('/api/auth', userRoutes);
 
-
+  
 
 module.exports = app;
