@@ -1,12 +1,13 @@
 import  React, {useState}  from 'react';
-import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import Input from '@mui/material/Input';
-import Button from '@mui/material/Button';
+import InputLabel from '@mui/material/InputLabel';
 import IconButton from '@mui/material/IconButton';
-
-import Stack from '@mui/material/Stack';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import Button from '@mui/material/Button';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,52 +17,55 @@ import { useNavigate } from 'react-router-dom';
 
 export default function CreateAccount() {
     const navigate = useNavigate();
+    const [values, setValues] = React.useState({
+      showPassword: false,
+    });
+    const handleClickShowPassword = () => {
+      setValues({
+        ...values,
+        showPassword: !values.showPassword,
+      });
+    };
+  
+    const handleMouseDownPassword = (event) => {
+      event.preventDefault();
+    };
+    const [status, setStatus] = useState('')
     
     const [mail, setMail] = useState();
     const [password, setPassword] = useState();
     const [username, setUsername] = useState();
-    const [imageProfil, setImgprofil] = useState({ preview: '', data: '' });
-    const [status, setStatus] = useState('')
+    const [imageProfil, setImageprofil] = useState({ preview: '', data: '' });
     const [isAdmin] = useState(false);
 
-   /* const handleSubmit = async (e) => {
-      e.preventDefault()
-      let formData = new FormData()
-      formData.append('file', imageProfil.data)
-      const response = await fetch('http://localhost:3000/images', {
-        method: 'POST',
-        body: formData,
-      })
-      if (response) setStatus(response.statusText)
-    }*/
   
     const handleFileChange = (e) => {
       const img = {
         preview: URL.createObjectURL(e.target.files[0]),
         data: e.target.files[0],
       }
-      setImgprofil(img)
+      setImageprofil(img)
     }
 
     const signup = (e) =>{
       e.preventDefault();
-      let form = document.getElementById('form');
-      let formData = new FormData(form)
-      
-      formData.append('mail', mail.data)
-      formData.append('password', password.data)
-      formData.append('username', username.data)
-      formData.append('userpic', imageProfil.data)
-      formData.append('isAdmin', isAdmin.data)
+      let myForm = document.getElementById('myForm');
+      let formData = new FormData(myForm);
+     
+      formData.append('mail', mail)
+      formData.append('password', password)
+      formData.append('username', username)
+      formData.append('image', imageProfil)
+      formData.append('isAdmin', isAdmin)
       
       console.log(formData);
      
-    axios.post("http://localhost:3000/api/auth/signup",{
+    axios.post("http://localhost:3000/api/auth/signup",formData,{
        
         headers: {
           "Content-Type": "multipart/form-data",
 
-        }, formData,
+        }
       })
         .then((response) => {
           setStatus(response.statusText)
@@ -72,86 +76,94 @@ export default function CreateAccount() {
         })
         .catch(function (error) {
           console.log(error);
+          console.error(error.response.data)
         });
     };
         
           
   return (
-    <Box
-      sx={{
-        '& > :not(style)': { m: 1 },
-      }}
-      noValidate
-      autoComplete="off"
-      onSubmit={signup}
-      
-    >
-      <form id='form'>
+    
+      <form id="myForm" name="myForm" encType="multipart/form-data" onSubmit={signup}>
+      <div>
       <FormControl variant="standard">
         <InputLabel htmlFor="component-simple">Mail</InputLabel>
-        <Input  id="component-simple" onChange={(event) => {
-            setMail(event.target.value);
-          }} />
+        <Input id="mail"
+              type="mail"
+              name="mail"
+              placeholder=" Email"
+              required pattern="[a-zâäàéèùêëîïôöçñA-Z0-9.-_]+[@]{1}[a-zA_Z0-9.-_]+[.]{1}[a-z]{2,4}" 
+              title="Ex: groupomania@gmail.com, ..."
+              value={values.mail}
+              onChange={(event) => {
+                setMail(event.target.value);
+              }}
+             aria-describedby="standard-mail-helper-text"
+              inputProps={{
+                "aria-label": "mail",
+             }} />
       </FormControl>
-      <FormControl variant="standard">
-        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-        <Input  type="password" id="component-simple"  onChange={(event) => {
-            setPassword(event.target.value);
-          }} />
+    </div>
+    <div>
+    <FormControl variant="standard">
+        <InputLabel htmlFor="component-simple">Password</InputLabel>
+        <Input   id="password"
+            type={values.showPassword ? "text" : "password"}
+            name="password"
+            placeholder=" Password"
+            title='Doit contenir min 2 chiffres'
+            value={values.password}
+            onChange={(event) => {
+              setPassword(event.target.value);
+            }}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                >
+                  {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+              }
+            />
       </FormControl>
-      <FormControl variant="standard">
+    </div>
+    <div>
+    <FormControl variant="standard">
         <InputLabel htmlFor="component-simple">Username</InputLabel>
-        <Input  id="component-simple"  onChange={(event) => {
-            setUsername(event.target.value);
-          }} />
+        <Input id="username"
+              type="text"
+              name="username"
+              placeholder=" Username"
+              required pattern="[a-zâäàéèùêëîïôöçñA-Z\s]{3,30}" 
+              title="Ex: SuperMario, Jo ..."
+              value={values.username}
+              onChange={(event) => {
+                setUsername(event.target.value);
+               }}
+              aria-describedby="standard-mail-helper-text"
+              inputProps={{
+                 "aria-label": " Username",
+              }} />
       </FormControl>
-
-
-
-    <FormControl >
+    </div>
+    <div>
+    {imageProfil.preview && <img src={imageProfil.preview} alt="UserPic" width='100' height='100' />}
+      
+    <label htmlFor="icon-button-file">
+  <Input accept="image/*" id="icon-button-file" type="file" name="image" onChange={handleFileChange} />
+  <IconButton color="primary" aria-label="upload picture" component="span">
+    <PhotoCamera />
+  </IconButton>
+</label>
+    </div>
+    <Button variant="contained" type="Submit">Créer Votre Compte</Button>
+    {status && <h4>{status}</h4>}
+  </form>
+   
     
-        
-        <Stack direction="row" alignItems="center" spacing={2}>
-      
-             <label htmlFor="icon-button-file">
-              <Input  accept="image/*" onChange={handleFileChange} id="icon-button-file" type="file" />
-              <IconButton color="primary" aria-label="upload picture" component="span">
-             
-              {imageProfil.preview && <img src={imageProfil.preview} alt="Profil Pic" width='100' height='100' />}
-              
-              </IconButton>
-              
-              
-              
-             </label>
-          <Button   type="submit" variant="contained">Créer Son Compte</Button>
-    
-         </Stack>
-         {status && <h4>{status}</h4>}
-         
-
-    </FormControl>
-      </form>
-      
-    
-       
-      
-
-       
-       
-        
-
-         
-        
-    
-      
-     
-     
-     
-      
-    </Box>
-        
-        
+  
     
   );
 };
