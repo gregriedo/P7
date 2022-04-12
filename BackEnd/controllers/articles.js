@@ -7,13 +7,14 @@ exports.createArticle = (req, res, next) => {
   const articleObject = new Article({
         title: req.body.title,
         message: req.body.message,
+        imageArticle: req.body.imageArticle, 
         user_id: req.body.user_id
 
     });
-  delete articleObject._id;
+  
   const article = new Article({
     ...articleObject,
-    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    imageArticle: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   });
   Article.create(article, (err, data) => {
         if (err)
