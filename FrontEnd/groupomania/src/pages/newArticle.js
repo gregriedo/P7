@@ -1,6 +1,6 @@
 import  React, {useState}  from 'react';
 import LabelBottomNavigation from "../components/Footer";
-import Box from '@mui/material/Box';
+import "../styles/newArticle.css";
 import { styled } from '@mui/material/styles';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
@@ -24,16 +24,7 @@ export default function NewPost() {
 
 
  
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        let formData = new FormData()
-        formData.append('file', imageArticle.data)
-        const response = await fetch('http://localhost:3000/image', {
-          method: 'POST',
-          body: formData,
-        })
-        if (response) setStatus(response.statusText)
-      }
+    
     
       const handleFileChange = (e) => {
         const img = {
@@ -54,16 +45,24 @@ export default function NewPost() {
       }
       const createArticle = (e) => {
         e.preventDefault();
+        let newArticle = document.getElementById('newArticle');
+        let formData = new FormData(newArticle);
+
+        formData.append('title', title)
+        formData.append('message', message)
+        formData.append('user_id', id)
+        formData.append('image', imageArticle)
         axios
-          .post("http://localhost:3000/api/articles/", {
-            
-            title,
-            message,
-            imageArticle,
-            user_id: id,
+          .post("http://localhost:3000/api/articles/",formData,{
+       
+            headers: {
+              "Content-Type": "multipart/form-data",
+             
+    
+            }
           })
           .then((response) => {
-            
+            setStatus(response.statusText)
             console.log(response);
             navigate("../userBoard", { replace: true });
            window.location.reload(false);
@@ -78,20 +77,12 @@ export default function NewPost() {
    
 
   return (
-      <Box component="form"
-      sx={{
-        '& .MuiTextField-root': { m: 1, width: '25ch' },
-      }}
-      noValidate
-      autoComplete="off"
-      onSubmit={handleSubmit}
-      >
-
-         
+    <form className='newarticle' id='newArticle' onSubmit={createArticle}>
       <FormControl >
         <TextField
           id="standard-multiline-flexible"
           label="Titre"
+          name="title"
           multiline
           maxRows={4}
           onChange={(event) => {
@@ -104,6 +95,7 @@ export default function NewPost() {
           
           id="standard-multiline-static"
           label="Message"
+          name="message"
           multiline
           rows={4}
           onChange={(event) => {
@@ -116,7 +108,7 @@ export default function NewPost() {
       <Stack direction="row" alignItems="center" spacing={2}>
       
       <label htmlFor="icon-button-file">
-       <Input accept="image/*" onChange={handleFileChange} id="icon-button-file" type="file" />
+       <Input accept="image/*" onChange={handleFileChange} id="icon-button-file" type="file" name='image'/>
        <IconButton color="primary" aria-label="upload picture" component="span">
        <PhotoCamera />
        {imageArticle.preview && <img src={imageArticle.preview} alt="" width='100' height='100' />}
@@ -138,14 +130,18 @@ export default function NewPost() {
       </Button>
       </Stack>
          {status && <h4>{status}</h4>}
-      </FormControl>   
+      </FormControl> 
       <footer>
         <LabelBottomNavigation />
       </footer>
+    </form>
+
+         
+        
+    
     
         
     
-      </Box>
 
   );
 };
