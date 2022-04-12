@@ -39,7 +39,7 @@ function UserBoard() {
            <div className="userProfil">
            <Avatar
             alt={userR.username}
-            src="{userR.imageProfil}"
+            src={userR.imageProfil}
             sx={{ width: 150, height: 150 }}
             />
            <div className="userUsername">
