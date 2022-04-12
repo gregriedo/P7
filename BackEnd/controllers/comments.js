@@ -5,13 +5,13 @@ exports.createNewComment = (req, res, next) => {
   const commentObject = new Comment({
         comment: req.body.comment,
         article_id: req.body.article_id,
+        imageComment: req.body.imageComment, 
         user_id: req.body.user_id
 
     });
-  delete commentObject._id;
   const comment = new Comment({
     ...commentObject,
-    /*imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`*/
+    imageComment: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   });
   Comment.createNewComment(comment, (err, data) => {
         if (err)
