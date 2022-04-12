@@ -1,5 +1,4 @@
 import  React, {useState}  from 'react';
-import Box from '@mui/material/Box';
 import LabelBottomNavigation from "../components/Footer";
 import { styled } from '@mui/material/styles';
 import FormControl from '@mui/material/FormControl';
@@ -9,6 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Stack from '@mui/material/Stack';
 import { useNavigate } from 'react-router-dom';
+import "../styles/newComment.css";
 import axios from 'axios';
 
 const Input = styled('input')({
@@ -23,16 +23,7 @@ export default function NewComment() {
 
 
  
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        let formData = new FormData()
-        formData.append('file', imageComment.data)
-        const response = await fetch('http://localhost:3000/image', {
-          method: 'POST',
-          body: formData,
-        })
-        if (response) setStatus(response.statusText)
-      }
+    
     
       const handleFileChange = (e) => {
         const img = {
@@ -53,15 +44,24 @@ export default function NewComment() {
       }
       const createComment = (e) => {
         e.preventDefault();
+        let newComment = document.getElementById('newComment');
+        let formData = new FormData(newComment);
+
+        formData.append('comment', comment)
+        formData.append('user_id', id)
+        formData.append('article_id', 61)
+        formData.append('image', imageComment)
         axios
-          .post("http://localhost:3000/api/articles/", {
-            
-            comment,
-            imageComment,
-            user_id: id,
+          .post("http://localhost:3000/api/comments/",formData,{
+       
+            headers: {
+              "Content-Type": "multipart/form-data",
+              "Accept" : "/",
+    
+            }
           })
           .then((response) => {
-            
+            setStatus(response.statusText)
             console.log(response);
             navigate("../userBoard", { replace: true });
            window.location.reload(false);
@@ -69,6 +69,7 @@ export default function NewComment() {
           })
           .catch(function (error) {
             console.log(error);
+            console.error(error.response.data)
           }); 
       };
 
@@ -76,20 +77,14 @@ export default function NewComment() {
    
 
   return (
-      <Box component="form"
-      sx={{
-        '& .MuiTextField-root': { m: 1, width: '25ch' },
-      }}
-      noValidate
-      autoComplete="off"
-      onSubmit={handleSubmit}
-      >
+     
 
-         
-      <FormControl >
+     <form className='newcomment' id='newComment' onSubmit={createComment}>
+     <FormControl >
         <TextField
           id="standard-multiline-flexible"
           label="Comment"
+          name='comment'
           multiline
           maxRows={4}
           onChange={(event) => {
@@ -102,7 +97,7 @@ export default function NewComment() {
       <Stack direction="row" alignItems="center" spacing={2}>
       
       <label htmlFor="icon-button-file">
-       <Input accept="image/*" onChange={handleFileChange} id="icon-button-file" type="file" />
+       <Input accept="image/*" onChange={handleFileChange} id="icon-button-file" type="file" name='image' />
        <IconButton color="primary" aria-label="upload picture" component="span">
        <PhotoCamera />
        {imageComment.preview && <img src={imageComment.preview} alt="" width='100' height='100' />}
@@ -115,7 +110,7 @@ export default function NewComment() {
     
         
       <Button
-        onClick={createComment}
+       
         type="submit"
         variant="contained"
         color="primary"
@@ -130,9 +125,10 @@ export default function NewComment() {
           <LabelBottomNavigation />
           </footer>
     
+       </form>    
+      
         
     
-      </Box>
 
   );
 };
